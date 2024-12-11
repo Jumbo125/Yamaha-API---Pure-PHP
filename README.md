@@ -1,13 +1,12 @@
-# Yamaha Reciever API
+# Yamaha Receiver API  
 ### Pure PHP Script
 
 ## HOW TO USE
 
-This is a full PHP soultion, to read and set the Yamaha Reciever. It will use the factory API.
-There are a lot of mure Parameters be possible, but i setup the main functions
-Everyone can deploy and add some other options. I will tell you, how it will be work.
+This is a complete PHP solution for reading from and controlling a Yamaha receiver. It utilizes the official factory API. While there are many additional parameters available, I have focused on setting up the main functions. Anyone can deploy this script and easily add more features. I'll explain how it works.
 
-> I use it for my Yamaha RX-V470 Reciever
+> I use this script for my Yamaha RX-V470 receiver.
+
 ## Installation
 
 ### First Step
