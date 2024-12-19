@@ -7,7 +7,10 @@ require_once("yamaha_config.php");
 
 
 $yamaha = new YamahaController($URL_yamaha, [
+    'setCursor' => $xml_set_cursor,
     'getAll_infos' => $xml_get_full_info,
+    'getPlay_infos' => $xml_get_play_info,
+    'test' => $test,
     'getVolume' => $xml_get_volume,
     'setVolume' => $xml_set_volume,
     'stepVolume' => $xml_step_volume,
@@ -27,6 +30,7 @@ $yamaha = new YamahaController($URL_yamaha, [
     'getHDMIOutput' => $xml_get_hdmi_output,
     'setVideoOutput' => $xml_set_video_output,
     'getVideoOutput' => $xml_get_video_output,
+    'getUkwMetainfo' => $xml_get_ukw_metainfo,
     'setUkwChannelInfo' => $xml_set_ukw_tuner_select_channel,
     'getUkwChannelInfo' => $xml_get_ukw_tuner_select_channel,
     'getIpodMetaInfo' => $xml_get_ipod_meta_info,
@@ -34,6 +38,8 @@ $yamaha = new YamahaController($URL_yamaha, [
     'getIpodShuffle' => $xml_get_ipod_play_mode_shuffle,
     'setIpodRepeat' => $xml_set_ipod_play_mode_repeat,
     'getIpodRepeat' => $xml_get_ipod_play_mode_repeat,
+    'getIpodPlayPause' => $xml_get_ipod_play_pause,
+    'getIpodUsbMetaInfo' => $xml_get_ipod_usb_meta_info,
     'getIpodUsbPlayPause' => $xml_get_ipod_usb_play_pause,
     'setIpodUsbPlayPause' => $xml_set_ipod_usb_play_pause,
     'getUsbMetaInfo' => $xml_get_usb_meta_info,
@@ -45,6 +51,10 @@ $yamaha = new YamahaController($URL_yamaha, [
     'setUsbRepeat' => $xml_set_usb_repeat,
     'setBassHeadphone' => $xml_set_bass_headphone,
     'getBassHeadphone' => $xml_get_bass_headphone,
+    'setIpodUsbPlayModeShuffle' => $xml_set_ipod_usb_play_mode_shuffle,
+    'getIpodUsbPlayModeShuffle' => $xml_get_ipod_usb_play_mode_shuffle,
+    'setIpodUsbPlayModeRepeat' => $xml_set_ipod_usb_play_mode_repeat,
+    'getIpodUsbPlayModeRepeat' => $xml_get_ipod_usb_play_mode_repeat,
 ]);
 
 
@@ -60,15 +70,28 @@ class YamahaController {
         $this->xml_strings = $xml_strings;
     }
 
+    public function test($value = "", $debug = false) {
+        return set_param_curl($this->xml_strings['test'], $this->url_yamaha, $value, $debug);
+    }
+
+    public function setCursor($value = "", $debug = false) {
+        return set_param_curl($this->xml_strings['setCursor'], $this->url_yamaha, $value, $debug);
+    }
+
     public function getAll_infos($as_array = false, $debug = false) {
         return get_param_curl($this->xml_strings['getAll_infos'], $this->url_yamaha, $as_array, $debug);
+    }
+
+    public function getPlay_infos($value, $as_array = false, $debug = false) {
+        $xml_string = str_replace ("{value}", $value, $this->xml_strings['getPlay_infos']);
+        return get_param_curl($xml_string, $this->url_yamaha, $as_array, $debug);
     }
 
     public function getVolume($as_array = false, $debug = false) {
         return get_param_curl($this->xml_strings['getVolume'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setVolume($value, $debug = false) {
+    public function setVolume($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setVolume'], $this->url_yamaha, $value, $debug);
     }
 
@@ -80,7 +103,7 @@ class YamahaController {
         return get_param_curl($this->xml_strings['getSurround'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setSurround($value, $debug = false) {
+    public function setSurround($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setSurround'], $this->url_yamaha, $value, $debug);
     }
 
@@ -88,11 +111,11 @@ class YamahaController {
         return get_param_curl($this->xml_strings['getPower'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setPower($value, $debug = false) {
+    public function setPower($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setPower'], $this->url_yamaha, $value, $debug);
     }
 
-    public function setSleep($value, $debug = false) {
+    public function setSleep($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setSleep'], $this->url_yamaha, $value, $debug);
     }
 
@@ -100,7 +123,7 @@ class YamahaController {
         return get_param_curl($this->xml_strings['getSleep'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setMute($value, $debug = false) {
+    public function setMute($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setMute'], $this->url_yamaha, $value, $debug);
     }
 
@@ -108,7 +131,7 @@ class YamahaController {
         return get_param_curl($this->xml_strings['getMute'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setInput($value, $debug = false) {
+    public function setInput($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setInput'], $this->url_yamaha, $value, $debug);
     }
 
@@ -116,7 +139,7 @@ class YamahaController {
         return get_param_curl($this->xml_strings['getInput'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setTreble($value, $debug = false) {
+    public function setTreble($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setTreble'], $this->url_yamaha, $value, $debug);
     }
 
@@ -124,7 +147,7 @@ class YamahaController {
         return get_param_curl($this->xml_strings['getTreble'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setHDMIOutput($value, $debug = false) {
+    public function setHDMIOutput($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setHDMIOutput'], $this->url_yamaha, $value, $debug);
     }
 
@@ -132,7 +155,7 @@ class YamahaController {
         return get_param_curl($this->xml_strings['getHDMIOutput'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setVideoOutput($value, $debug = false) {
+    public function setVideoOutput($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setVideoOutput'], $this->url_yamaha, $value, $debug);
     }
 
@@ -140,7 +163,11 @@ class YamahaController {
         return get_param_curl($this->xml_strings['getVideoOutput'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setUkwChannelInfo($value, $debug = false) {
+    public function getUkwMetainfo($as_array = false, $debug = false) {
+        return get_param_curl($this->xml_strings['getUkwMetainfo'], $this->url_yamaha, $as_array, $debug);
+    }
+
+    public function setUkwChannelInfo($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setUkwChannelInfo'], $this->url_yamaha, $value, $debug);
     }
 
@@ -152,7 +179,7 @@ class YamahaController {
         return get_param_curl($this->xml_strings['getIpodMetaInfo'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setIpodShuffle($value, $debug = false) {
+    public function setIpodShuffle($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setIpodShuffle'], $this->url_yamaha, $value, $debug);
     }
 
@@ -160,7 +187,7 @@ class YamahaController {
         return get_param_curl($this->xml_strings['getIpodShuffle'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setIpodRepeat($value, $debug = false) {
+    public function setIpodRepeat($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setIpodRepeat'], $this->url_yamaha, $value, $debug);
     }
 
@@ -168,12 +195,36 @@ class YamahaController {
         return get_param_curl($this->xml_strings['getIpodRepeat'], $this->url_yamaha, $as_array, $debug);
     }
 
+    public function getIpodPlayPause($as_array = false, $debug = false) {
+        return get_param_curl($this->xml_strings['getIpodPlayPause'], $this->url_yamaha, $as_array, $debug);
+    }
+
+    public function getIpodUsbMetaInfo($as_array = false, $debug = false) {
+        return get_param_curl($this->xml_strings['getIpodUsbMetaInfo'], $this->url_yamaha, $as_array, $debug);
+    }
+
     public function getIpodUsbPlayPause($as_array = false, $debug = false) {
         return get_param_curl($this->xml_strings['getIpodUsbPlayPause'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setIpodUsbPlayPause($value, $debug = false) {
+    public function setIpodUsbPlayPause($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setIpodUsbPlayPause'], $this->url_yamaha, $value, $debug);
+    }
+
+    public function setIpodUsbPlayModeShuffle($value = "", $debug = false) {
+        return set_param_curl($this->xml_strings['setIpodUsbPlayModeShuffle'], $this->url_yamaha, $value, $debug);
+    }
+    
+    public function getIpodUsbPlayModeShuffle($as_array = false, $debug = false) {
+        return get_param_curl($this->xml_strings['getIpodUsbPlayModeShuffle'], $this->url_yamaha, $as_array, $debug);
+    }
+    
+    public function setIpodUsbPlayModeRepeat($value = "", $debug = false) {
+        return set_param_curl($this->xml_strings['setIpodUsbPlayModeRepeat'], $this->url_yamaha, $value, $debug);
+    }
+    
+    public function getIpodUsbPlayModeRepeat($as_array = false, $debug = false) {
+        return get_param_curl($this->xml_strings['getIpodUsbPlayModeRepeat'], $this->url_yamaha, $as_array, $debug);
     }
 
     public function getUsbMetaInfo($as_array = false, $debug = false) {
@@ -184,7 +235,7 @@ class YamahaController {
         return get_param_curl($this->xml_strings['getUsbPlayStopNextPrev'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setUsbPlayStopNextPrev($value, $debug = false) {
+    public function setUsbPlayStopNextPrev($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setUsbPlayStopNextPrev'], $this->url_yamaha, $value, $debug);
     }
 
@@ -192,7 +243,7 @@ class YamahaController {
         return get_param_curl($this->xml_strings['getUsbShuffle'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setUsbShuffle($value, $debug = false) {
+    public function setUsbShuffle($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setUsbShuffle'], $this->url_yamaha, $value, $debug);
     }
 
@@ -200,11 +251,11 @@ class YamahaController {
         return get_param_curl($this->xml_strings['getUsbRepeat'], $this->url_yamaha, $as_array, $debug);
     }
 
-    public function setUsbRepeat($value, $debug = false) {
+    public function setUsbRepeat($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setUsbRepeat'], $this->url_yamaha, $value, $debug);
     }
 
-    public function setBassHeadphone($value, $debug = false) {
+    public function setBassHeadphone($value = "", $debug = false) {
         return set_param_curl($this->xml_strings['setBassHeadphone'], $this->url_yamaha, $value, $debug);
     }
 

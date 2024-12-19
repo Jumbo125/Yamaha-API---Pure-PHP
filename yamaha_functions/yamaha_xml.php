@@ -1,4 +1,51 @@
 <?php
+
+$test = '<?xml version="1.0" encoding="utf-8"?>
+    <YAMAHA_AV cmd="PUT">
+    <Tuner>
+        <Play_Info>
+        <Feature_Availability>Not Ready</Feature_Availability>
+        <Search_Mode>Preset</Search_Mode>
+        <Preset>
+            <Preset_Sel>1</Preset_Sel>
+        </Preset>
+        <Tuning>
+            <Band>FM</Band>
+            <Freq>
+            <Current>
+                <Val>9850</Val>
+                <Exp>2</Exp>
+                <Unit>MHz</Unit>
+            </Current>
+            <FM>
+                <Val>9850</Val>
+                <Exp>2</Exp>
+                <Unit>MHz</Unit>
+            </FM>
+            <AM>
+                <Val>1206</Val>
+                <Exp>0</Exp>
+                <Unit>kHz</Unit>
+            </AM>
+            </Freq>
+        </Tuning>
+        <FM_Mode>Auto</FM_Mode>
+        <Signal_Info>
+            <Tuned>Negate</Tuned>
+            <Stereo>Negate</Stereo>
+        </Signal_Info>
+        <Meta_Info>
+            <Program_Type></Program_Type>
+            <Program_Service></Program_Service>
+            <Radio_Text_A></Radio_Text_A>
+            <Radio_Text_B></Radio_Text_B>
+            <Clock_Time></Clock_Time>
+        </Meta_Info>
+        </Play_Info>
+    </Tuner>
+    </YAMAHA_AV>';
+
+
 // Fordert den aktuellen Zustand der Power-Einstellung an (GET)
 // Mögliche Rückgabewerte:
 // "Standby" - Gerät ist im Standby-Modus
@@ -16,6 +63,47 @@ $xml_get_full_info = '<?xml version="1.0" encoding="utf-8"?>
 			<Basic_Status>GetParam</Basic_Status>
 		</Main_Zone>
 	</YAMAHA_AV>';
+
+
+// Gibt infos über aktuellen Titel
+// Mögliche Werte "USB"
+// Liefert ain arra zurück
+//bspw: 
+        /*
+                $data = [
+                    "@attributes" => [
+                        "rsp" => "GET",
+                        "RC" => "0"
+                    ],
+                    "USB" => [
+                        "Play_Info" => [
+                            "Feature_Availability" => "Ready",
+                            "Playback_Info" => "Play",
+                            "Play_Mode" => [
+                                "Repeat" => "Off",
+                                "Shuffle" => "Off"
+                            ],
+                            "Meta_Info" => [
+                                "Artist" => "Band Aid",
+                                "Album" => "The Best Christmas Album In The World Ever",
+                                "Song" => "Do They Know It's Christmas?"
+                            ],
+                            "Album_ART" => [
+                                "URL" => "/YamahaRemoteControl/AlbumART/AlbumART.ymf",
+                                "ID" => "147",
+                                "Format" => "YMF"
+                            ]
+                        ]
+                    ]
+                ];
+        */ 
+
+$xml_get_play_info = '<?xml version="1.0" encoding="utf-8"?>
+    <YAMAHA_AV cmd="GET">
+        <{value}>
+            <Play_Info>GetParam</Play_Info>
+        </{value}>
+    </YAMAHA_AV>';
 
 /* ####### Power (Einschalten/Ausschalten) ###### */
 $xml_get_power = '<?xml version="1.0" encoding="utf-8"? 
@@ -37,11 +125,9 @@ $xml_get_power = '<?xml version="1.0" encoding="utf-8"?
 $xml_set_power = '<?xml version="1.0" encoding="utf-8"?>
     <YAMAHA_AV cmd="PUT">
         <Main_Zone>
-            <Basic_Status>
                 <Power_Control>
                     <Power>{value}</Power>
                 </Power_Control>
-            </Basic_Status>
         </Main_Zone>
     </YAMAHA_AV>';
 // Ersetze {value} durch "On" oder "Standby" für Ein-/Ausschalten
@@ -88,11 +174,9 @@ $xml_get_sleep = '<?xml version="1.0" encoding="utf-8"?>
 $xml_set_sleep = '<?xml version="1.0" encoding="utf-8"?>
     <YAMAHA_AV cmd="PUT">
     <Main_Zone>
-        <Basic_Status>
             <Power_Control>
                 <Sleep>{value}</Sleep>
             </Power_Control>
-        </Basic_Status>
     </Main_Zone>
     </YAMAHA_AV>';
 // Ersetze {value} durch "Off" oder eine Zeit in Minuten (z. B. "30" für 30 Minuten)
@@ -208,6 +292,7 @@ $xml_set_mute = '<?xml version="1.0" encoding="utf-8"?>
 //#######################################################################
 /* ####### Input (Eingangsauswahl) ###### */
 // Fordert den aktuellen Eingang des Geräts an (GET)
+// "AirPlay"
 // Mögliche Rückgabewerte:
 // "SIRIUS" - SIRIUS Radio als Eingang
 // "TUNER" - Tuner-Eingang
@@ -233,6 +318,7 @@ $xml_set_mute = '<?xml version="1.0" encoding="utf-8"?>
 
 // Setzt den Eingang (PUT)
 // Mögliche Werte:
+// "AirPlay"
 // "SIRIUS" - SIRIUS Radio als Eingang wählen
 // "TUNER" - Tuner-Eingang wählen
 // "MULTI CH" - Mehrkanal-Eingang wählen
@@ -278,6 +364,29 @@ $xml_set_input = '<?xml version="1.0" encoding="utf-8"?>
         </Main_Zone>
     </YAMAHA_AV>';
 // Ersetze {value} durch den Namen der Quelle, z. B. "AV1", "HDMI1", oder "Tuner"
+
+/* ####### Eingangsquelle ###### */
+$xml_set_input = '<?xml version="1.0" encoding="utf-8"?>
+    <YAMAHA_AV cmd="PUT">
+        <Main_Zone>
+            <Input>
+                <Input_Sel>{value}</Input_Sel>
+            </Input>
+        </Main_Zone>
+    </YAMAHA_AV>';
+// Ersetze {value} durch den Namen der Quelle, z. B. "AV1", "HDMI1", oder "Tuner"
+
+//#########################################################
+// Cursor option: Up, Down, Left, Right, Sel, Return
+
+$xml_set_cursor = '<?xml version="1.0" encoding="utf-8"?>
+    <YAMAHA_AV cmd="PUT">
+        <Main_Zone>
+            <Cursor_Control>
+                <Cursor>{value}</Cursor>
+            </Cursor_Control>
+        </Main_Zone>
+    </YAMAHA_AV>';
 
 
 //######################################################################################
@@ -578,6 +687,12 @@ $xml_set_video_output = '<?xml version="1.0" encoding="utf-8"?>
     </YAMAHA_AV>';
 
 //##################################################################
+$xml_get_ukw_metainfo = '<?xml version="1.0" encoding="utf-8"?>
+        <YAMAHA_AV cmd="GET">
+        <Tuner>
+            <Play_Info>GetParam</Play_Info>
+        </Tuner>
+    </YAMAHA_AV>';
 /* ####### UKW-Tuner Channel Info (GET) ###### */
 // Fordert Informationen zum aktuell ausgewählten Preset-Item des UKW-Tuners an (GET)
 // Diese Anfrage gibt Informationen zum gewählten Preset-Item des UKW-Tuners zurück, wie z.B. Name und Details des Presets.
@@ -680,6 +795,35 @@ $xml_get_ipod_play_mode_shuffle = '<?xml version="1.0" encoding="utf-8"?>
     </YAMAHA_AV>';
 
 //###########################################################################
+/* ####### iPod Play Pause ###### */
+//<!-- 
+  //Steuerbefehle für die Yamaha-Gerätebedienung:
+  //- "Stop": Wiedergabe stoppen.
+  //- "Pause": Wiedergabe pausieren.
+  //- "Play": Wiedergabe starten oder fortsetzen.
+  //- "|<<": Zum vorherigen Titel springen oder Rücklauf beginnen.
+  //- ">>|": Zum nächsten Titel springen oder Vorspulen.
+  //- "Skip Rev": Titel zurückspringen.
+  //- "Skip Fwd": Titel vorspringen.
+//-->
+$xml_get_ipod_usb_meta_info = '<?xml version="1.0" encoding="utf-8"?>
+    <YAMAHA_AV cmd="GET">
+        <iPod_USB>
+            <Play_Info>
+                <Meta_Info>GetParam</Meta_Info>
+            </Play_Info>
+        </iPod_USB>
+    </YAMAHA_AV>
+        ';
+
+$xml_get_ipod_play_pause = '<?xml version="1.0" encoding="utf-8"?>
+    <YAMAHA_AV cmd="PUT">
+        <iPod>
+            <Play_Control>
+                <Playback>***</Playback>
+            </Play_Control>
+        </iPod>
+    </YAMAHA_AV>';
 
 
 /* ####### iPod Play Mode Repeat ###### */
@@ -740,15 +884,15 @@ $xml_get_ipod_usb_meta_info = '<?xml version="1.0" encoding="utf-8"?>
 // "Stop" - Wiedergabe gestoppt
 // "Pause" - Wiedergabe pausiert
 // "Play" - Wiedergabe läuft
-// "|<<" - Springt zum vorherigen Titel
-// ">>|" - Springt zum nächsten Titel
+// "|<< oder Skip Rev" - Springt zum vorherigen Titel
+// ">>| oder Skip Fwd" - Springt zum nächsten Titel
 // "Skip Rev" - Überspringt rückwärts (vergangene Titel)
 // "Skip Fwd" - Überspringt vorwärts (nächste Titel)
 $xml_get_ipod_usb_play_pause = '<?xml version="1.0" encoding="utf-8"?>
     <YAMAHA_AV cmd="GET">
     <iPod_USB>
         <Play_Control>
-            <Playback>GetParam</Playback> <!-- Fordert den aktuellen Status der iPod-Wiedergabe an -->
+            <Playback>GetParam</Playback> 
         </Play_Control>
     </iPod_USB>
     </YAMAHA_AV>';
@@ -759,32 +903,90 @@ $xml_get_ipod_usb_play_pause = '<?xml version="1.0" encoding="utf-8"?>
 // "Stop" - Wiedergabe gestoppt
 // "Pause" - Wiedergabe pausiert
 // "Play" - Wiedergabe läuft
-// "|<<" - Springt zum vorherigen Titel
-// ">>|" - Springt zum nächsten Titel
+// "|<< oder Skip Rev" - Springt zum vorherigen Titel
+// ">>| oder Skip Fwd" - Springt zum nächsten Titel
 // "Skip Rev" - Überspringt rückwärts (vergangene Titel)
 // "Skip Fwd" - Überspringt vorwärts (nächste Titel)
 $xml_set_ipod_usb_play_pause = '<?xml version="1.0" encoding="utf-8"?>
     <YAMAHA_AV cmd="PUT">
     <iPod_USB>
         <Play_Control>
-            <Playback>{value}</Playback> <!-- Setzt den gewünschten Status für die iPod-Wiedergabe -->
+            <Playback>{value}</Playback> 
         </Play_Control>
     </iPod_USB>
     </YAMAHA_AV>';
 
 //################################################################
+/* ####### iPod Repeat Status ###### */
+// Setzt den iPod Repeat Status (PUT)
+// Mögliche Werte:
+// "Off" - Deaktiviert die Wiederholfunktion. Kein Titel wird wiederholt.
+// "One" - Wiederholt nur den aktuellen Titel. Der Titel wird nach dem Abspielen erneut abgespielt.
+// "All" - Wiederholt die gesamte Playlist oder das Album. Nach dem letzten Titel beginnt die Wiedergabe wieder von vorne.
+$xml_get_ipod_usb_play_mode_repeat = '<?xml version="1.0" encoding="utf-8"?>
+    <YAMAHA_AV cmd="GET">
+        <iPod_USB>
+            <Play_Control>
+                <Play_Mode>
+                    <Repeat>GetParam</Repeat>
+                </Play_Mode>
+            </Play_Control>
+        </iPod_USB>
+    </YAMAHA_AV>';
+
+//################################################################
+$xml_set_ipod_usb_play_mode_repeat = '<?xml version="1.0" encoding="utf-8"?>
+    <YAMAHA_AV cmd="PUT">
+        <iPod_USB>
+            <Play_Control>
+                <Play_Mode>
+                    <Repeat>{value}</Repeat>
+                </Play_Mode>
+            </Play_Control>
+        </iPod_USB>
+    </YAMAHA_AV>';
+
+//################################################################
+$xml_get_ipod_usb_play_mode_shuffle = '<?xml version="1.0" encoding="utf-8"?>
+    <YAMAHA_AV cmd="GET">
+        <iPod_USB>
+            <Play_Control>
+                <Play_Mode>
+                    <Shuffle>GetParam</Shuffle>
+                </Play_Mode>
+            </Play_Control>
+        </iPod_USB>
+    </YAMAHA_AV>';
+
+//################################################################
+$xml_set_ipod_usb_play_mode_shuffle = '<?xml version="1.0" encoding="utf-8"?>
+    <YAMAHA_AV cmd="PUT">
+        <iPod_USB>
+            <Play_Control>
+                <Play_Mode>
+                    <Shuffle>{value}</Shuffle>
+                </Play_Mode>
+            </Play_Control>
+        </iPod_USB>
+    </YAMAHA_AV>';
+
+
+//################################################################
+
+
 
 /* ####### USB Meta Info ###### */
 // Fordert die Metainformationen der aktuellen USB-Wiedergabe an (GET)
 // Mögliche Rückgabewerte:
 // Enthält die Metadaten wie Titel, Künstler, Album, etc. der aktuellen Wiedergabe
+// liefert ein array
 $xml_get_usb_meta_info = '<?xml version="1.0" encoding="utf-8"?>
     <YAMAHA_AV cmd="GET">
-    <USB>
-        <Play_Info>
-            <Meta_Info>GetParam</Meta_Info> <!-- Fordert die Metadaten der aktuellen USB-Wiedergabe an -->
-        </Play_Info>
-    </USB>
+        <USB>
+            <Play_Info>
+                <Meta_Info>GetParam</Meta_Info>
+            </Play_Info>
+        </USB>
     </YAMAHA_AV>';
 
 
@@ -797,8 +999,8 @@ $xml_get_usb_meta_info = '<?xml version="1.0" encoding="utf-8"?>
 // Mögliche Rückgabewerte:
 // "Stop" - Wiedergabe gestoppt
 // "Play" - Wiedergabe läuft
-// "|<<" - Springt zum vorherigen Titel
-// ">>|" - Springt zum nächsten Titel
+// "|<< oder Skip Rev" - Springt zum vorherigen Titel
+// ">>| oder Skip Fwd" - Springt zum nächsten Titel
 // "Skip Rev" - Überspringt rückwärts (vergangene Titel)
 // "Skip Fwd" - Überspringt vorwärts (nächste Titel)
 $xml_get_usb_play_stop_next_prev = '<?xml version="1.0" encoding="utf-8"?>
@@ -815,8 +1017,8 @@ $xml_get_usb_play_stop_next_prev = '<?xml version="1.0" encoding="utf-8"?>
 // Mögliche Werte:
 // "Stop" - Wiedergabe gestoppt
 // "Play" - Wiedergabe läuft
-// "|<<" - Springt zum vorherigen Titel
-// ">>|" - Springt zum nächsten Titel
+// "|<< oder Skip Rev" - Springt zum vorherigen Titel
+// ">>| oder Skip Fwd" - Springt zum nächsten Titel
 // "Skip Rev" - Überspringt rückwärts (vergangene Titel)
 // "Skip Fwd" - Überspringt vorwärts (nächste Titel)
 $xml_set_usb_play_stop_next_prev = '<?xml version="1.0" encoding="utf-8"?>
@@ -925,7 +1127,7 @@ $xml_get_bass_headphone = '<?xml version="1.0" encoding="utf-8"?>
             <Headphone>
                 <Tone>
                     <Bass>
-                        <Val>GetParam</Val> <!-- Fordert den aktuellen Basswert im Headphone Tone Bereich an -->
+                        <Val>GetParam</Val>
                     </Bass>
                 </Tone>
             </Headphone>

@@ -38,7 +38,10 @@ function get_param_curl($xmlData, $url, $as_array, $debug){
 		}
 		else if ($as_array === false && $debug === true){
 			// Anfrage ausführen
+			echo "Debug active";
 			$debuginfo = htmlspecialchars($response);
+			echo htmlspecialchars($response);
+			var_dump($response);
 			return $debuginfo;
 	}
 		else if ($as_array === true && $debug === false){
@@ -52,8 +55,11 @@ function get_param_curl($xmlData, $url, $as_array, $debug){
 			
 } 
 
-function set_param_curl ($xmlData, $url,$edit_value, $debug){
-	$xmlData = str_replace("{value}", $edit_value, $xmlData);
+function set_param_curl ($xmlData, $url, $edit_value, $debug){
+	if ($edit_value != ""){
+		$xmlData = str_replace("{value}", $edit_value, $xmlData);
+	}
+	
 	// Gebe den XML-String aus, nachdem der Platzhalter ersetzt wurde
 	// cURL initialisieren
 	$ch = curl_init();
@@ -85,7 +91,11 @@ function set_param_curl ($xmlData, $url,$edit_value, $debug){
 	$repsonse_length = strlen($response);
 	
 	if ($debug == true){
+		echo "<h2>Debugging eingeschaltet</h2>";
+		echo "XML Anfrage: <br>".htmlspecialchars($xmlData) ."<br>";
+		echo "<br>Ergebnis RAW: <br>";
 		var_dump($response);
+		echo "<br><br>Ergebnis htmlspecialchars: <br>";
 		echo htmlspecialchars($response);
 	}
 	else if ($repsonse_length > 0){
