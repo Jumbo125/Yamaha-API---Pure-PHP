@@ -40,7 +40,7 @@ $yamaha = new YamahaController...
     //Functions info
         getVolume(as Array, Debug Mode);
     
-    $volume = getVolume(true);
+    $volume = $yamaha -> getVolume(true, false);
     print_r ($volume);
 
         // will return
@@ -56,7 +56,7 @@ $yamaha = new YamahaController...
 - The Reason of this usage is, to do one Request and get multiple values. You don't need to do a request for each value
 
 ```
-$volume = getVolume(true);
+$volume = $yamaha -> getVolume(true);
 
 //Now, $Volume is a array, with all Values
 
@@ -137,7 +137,8 @@ All the functions, will be listet in the class.php file
 Example to turn on the reciever:
         
 ```
-    $yamaha->setPower("On");
+// $yamaha->setPower("new value", "debug Mode (Default 0 false)");
+    $yamaha->setPower("On", false);
 ```
 
 ## XML Request Answer Example
